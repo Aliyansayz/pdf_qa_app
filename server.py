@@ -1,17 +1,32 @@
+import uuid
 from flask import Flask, render_template_string, request, redirect, url_for
+from response import *
+
 app = Flask(__name__)
 
+global  final_docs_list
 # Use a global list for simplicity. In a real application, you'd use a database.
-messages = []
 
+@app.route('/upload', methods=['POST'])
+def upload():
+    if request.method == 'POST':
+        files = request.files.getlist('file')
+        unique_id = uuid.uuid4()
+        final_docs_list = create_docs(files , unique_id )    
+        
+                    
+
+
+messages = []
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global messages
     if request.method == 'POST':
         if 'send' in request.form:
             message = request.form.get('message')
+            answer = save_answer(query, final_doc_list )
             # messages.append({'text': message, 'sender': 'user'}) 
-            messages.append({'text': f'Received your message: {message}' , 'sender': f"{message}" } )
+            messages.append({'response': f'{answer}' , 'sender': f"{message}" } )
         
         elif 'reset' in request.form:
             messages = []
@@ -174,8 +189,11 @@ def home():
             <div class="container">
     <div class="row">
         <div>
-            <input type="file" id="file-upload" accept=".pdf" hidden name="file[]" multiple="">
-            <button id="upload-button" class="btn btn-primary btn-sm">Upload File</button>
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+        
+                <input type="file" id="file-upload" accept=".pdf" hidden name="file[]" multiple="">
+                <button type="submit"  id="upload-button" class="btn btn-primary btn-sm">Upload File</button>
+            </form>
         </div>
         <!-- Chat Element -->
         <div class="col-12">
@@ -185,7 +203,7 @@ def home():
                         <div class="me">{{ message.sender }}</div>
                     </div>
                     <div class="message-box bot" style="text-align: left;">
-                        <div class="message-line">{{ message.text }}</div>
+                        <div class="message-line">{{ message.response }}</div>
                     </div>
                 {% endfor %}
             </div>
