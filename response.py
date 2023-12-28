@@ -11,7 +11,6 @@ from langchain.schema import Document
 import pandas as pd
 from langchain_experimental.agents.agent_toolkits.pandas.base import create_pandas_dataframe_agent
 import requests
-import json
 import pinecone
 from pypdf import PdfReader
 from langchain.llms.openai import OpenAI
