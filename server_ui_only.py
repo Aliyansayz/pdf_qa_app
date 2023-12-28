@@ -1,14 +1,29 @@
 from flask import Flask, render_template_string, request, redirect, url_for
+from werkzeug.utils import secure_filename
+
+
 app = Flask(__name__)
+global  final_docs_list
+
+
 
 # Use a global list for simplicity. In a real application, you'd use a database.
+
 messages = []
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global messages
     if request.method == 'POST':
-        if 'send' in request.form:
+        if 'files' not in request.files.getlist('files'):
+            final_docs_list = None
+            print("No files found")
+        else: 
+            files = request.files.getlist('file')
+            # final_docs_list = create_docs(files , unique_id )
+            print(files)
+
+        if 'send'   in  request.form:
             message = request.form.get('message')
             # messages.append({'text': message, 'sender': 'user'}) 
             messages.append({'text': f'Received your message: {message}' , 'sender': f"{message}" } )
@@ -183,7 +198,7 @@ def home():
             <div class="container">
     <div class="row">
         <div>
-            <input type="file" id="file-upload" accept=".pdf" hidden name="file[]" multiple="">
+            <input type="file" id="file-upload" accept=".pdf" hidden name="files" multiple="">
             <button id="upload-button" class="btn btn-primary btn-sm">Upload File</button>
         </div>
         <!-- Chat Element -->
@@ -201,7 +216,6 @@ def home():
         </div>
     </div>
 </div>
-
 
 
                     
