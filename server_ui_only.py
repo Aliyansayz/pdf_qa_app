@@ -3,12 +3,25 @@ from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
-global  final_docs_list
+global  final_docs_list, uploaded
 
+uploaded = False
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    if request.method == 'POST':
+        uploaded = True
+        files = request.files.getlist('files')
+        filenames = []
+        for file in files:
+            print(file.filename)
+            # final_docs_list.append(file)
+        return redirect(url_for('home', messages=messages, uploaded=uploaded))
 
 
 # Use a global list for simplicity. In a real application, you'd use a database.
 
+global messages
 messages = []
 
 @app.route('/', methods=['GET', 'POST'])
@@ -198,8 +211,17 @@ def home():
             <div class="container">
     <div class="row">
         <div>
-            <input type="file" id="file-upload" accept=".pdf" hidden name="files" multiple="">
-            <button id="upload-button" class="btn btn-primary btn-sm">Upload File</button>
+            {% if not uploaded %}
+                <form action="/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" name="files" accept=".pdf" multiple />
+                <input type="submit" id="upload-button" class="btn btn-primary btn-sm" value="Upload">
+                </form>
+
+            {% elif uploaded %}
+                <p>Successfully Uploaded</p>
+            {% endif %}
+            
+            
         </div>
         <!-- Chat Element -->
         <div class="col-12">
@@ -248,7 +270,7 @@ def home():
 
         </body>
     </html>
-    """, messages=messages)
+    """, messages=messages, uploaded=uploaded)
 
 if __name__ == '__main__':
     app.run(debug=True)
