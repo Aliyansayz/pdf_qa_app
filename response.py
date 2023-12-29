@@ -21,11 +21,14 @@ import re
 # ____________________________________________
 WILL BE USED IN FLASK APP IN FRONT END 
 
+if len(messages) == 0 :  
+    qa = define_qa(relevant_docs)
+
 answer = save_answer(query, final_doc_list = None )
 
 messages.append( { "sender": f"{query}", "response": f"{answer}"   }  ) 
 
-#  for message in message: 
+#  for message in messages: 
         # message.sender
         # message.response
 
@@ -54,14 +57,30 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationSummaryMemory
 
+
+
 def get_answer(query, relevant_docs):
     
     llm = ChatOpenAI(model_name="gpt-4")
+    
     memory = ConversationSummaryMemory(llm=llm, memory_key="chat_history", return_messages=True)
     qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
     result = qa(question)
   
     return result["answer"]
+
+
+def define_qa(relevant_docs = None): 
+
+     llm = ChatOpenAI(model_name="gpt-4")
+     if not relevant_docs: 
+       relevant_docs = similar_docs(query,  document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
+     llm = ChatOpenAI(model_name="gpt-4")
+    
+    memory = ConversationSummaryMemory(llm=llm,  memory_key="chat_history", return_messages=True)
+    qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
+    
+    return qa 
 
 
 # PDF UPLOAD --> INTO TEXT DOCUMENT --> EMBEDDING FUNCTION -->  PUSH INTO PINECONE WITH THEIR EMBEDDINGS
