@@ -9,6 +9,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 # from langchain.document_loaders import UnstructuredMarkdownLoader
 from langchain.document_loaders import PyPDFLoader
 from langchain.document_loaders import Docx2txtLoader
+from langchain.document_loaders import DirectoryLoader
 from langchain.chains.question_answering import load_qa_chain
 
 from langchain.schema import Document 
