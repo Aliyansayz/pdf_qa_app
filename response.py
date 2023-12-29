@@ -23,11 +23,15 @@ import re
 # ____________________________________________
 WILL BE USED IN FLASK APP IN FRONT END 
 
-relevant_docs = get_relevant_docs(query, final_doc_list )
+embeddings = OpenAIEmbeddings(model_name="ada")
+unique_id  = 
+
 if len(messages) == 0 :  
-    
+    relevant_docs = get_relevant_docs(query, embeddings, unique_id, final_doc_list )
     qa_chain = define_qa(relevant_docs)
-    
+else : 
+    relevant_docs = get_relevant_docs(query, final_doc_list = None) 
+  
 answer = get_answer(query, qa_chain, relevant_docs)
 
 
@@ -37,9 +41,10 @@ messages.append( { "sender": f"{query}", "response": f"{answer}"   }  )
         # message.sender
         # message.response
 
-def get_relevant_docs(query,  final_doc_list = None ):
+def get_relevant_docs(query, embeddings, unique_id, final_doc_list = None ):
   
   document_count = 3
+  
   if final_doc_list:
       try:
               push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list) 
