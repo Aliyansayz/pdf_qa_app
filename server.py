@@ -325,36 +325,4 @@ if __name__ == '__main__':
 
 
                     
-                </div>
-    
-
-                <form method="post" class="form-inline justify-content-center"  >
-                    <input type="text" id="message-input" name="message"  class="form-control mb-2 mr-sm-2" style="width: 80%;" placeholder="Type your message here...">
-                    
-                    <button  name="send" id="send-button" class="btn btn-primary send">
-                            <i class='fa fa-paper-plane'></i>
-                        </button>
-                    <button type="button" onclick="record()" id="speak-button"  class="btn btn-primary send"><i class="fa fa-microphone"></i></button>
-                    <button name="reset" id="reset-button" class="btn btn-primary reset">
-                            <i class="fas fa-sync"></i>
-                        </button>
-                        </div>
                 
-                </form>
-                <div>
-                    <select id="language" name="language">
-                    <option value="English">English</option>
-                    <option value="Urdu">Urdu</option>
-                    <option value="Arabic">Arabic</option>
-                    <option value="French">French</option>
-                    <option value="Spanish">Spanish</option>
-                    </select>
-                </div>
-            </div>
-
-        </body>
-    </html>
-    """, messages=messages)
-
-if __name__ == '__main__':
-    app.run(debug=True)
