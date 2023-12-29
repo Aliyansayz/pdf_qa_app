@@ -1,3 +1,4 @@
+import os
 import openai
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
@@ -126,10 +127,15 @@ def split_docs(documents, chunk_size=1000, chunk_overlap=0):
 
 # QUERY MATCH --> SIMILAR SEARCH --> RELEVANT DOCS --> RELEVANT DOCS INTO SUMMARY 
 
-def create_docs(user_file_list, unique_id):
-  docs = []
-  for filename in user_file_list:
 
+def create_docs(directory, unique_id):
+  
+  user_file_list = os.listdir(directory)
+  docs = []
+
+  for filename in user_file_list:
+    
+      filepath = os.path.join(directory, filename)
       ext = filename.split(".")[-1]
 
       # Use PDFLoader for .pdf files
@@ -137,19 +143,12 @@ def create_docs(user_file_list, unique_id):
           loader = PyPDFLoader(filename)
           doc = loader.load()
 
-      elif ext == "docx":
-          loader = Docx2txtLoader(filename)
-          doc = loader.load()
-
-      elif ext == "md":
-          loader = UnstructuredMarkdownLoader(filename)
-          doc = loader.load()
-      # Skip other file types
       else:
           continue
       docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
 
   return docs
+
 
 
 def docs_content(relevant_docs):
