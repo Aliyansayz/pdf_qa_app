@@ -7,6 +7,8 @@ from langchain.document_loaders import UnstructuredHTMLLoader
 from langchain.document_loaders import UnstructuredMarkdownLoader
 from langchain.document_loaders import PyPDFLoader
 from langchain.document_loaders import Docx2txtLoader
+from langchain.chains.question_answering import load_qa_chain
+
 from langchain.schema import Document 
 import pandas as pd
 from langchain_experimental.agents.agent_toolkits.pandas.base import create_pandas_dataframe_agent
