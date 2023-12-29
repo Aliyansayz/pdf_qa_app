@@ -21,12 +21,12 @@ import re
 # ____________________________________________
 WILL BE USED IN FLASK APP IN FRONT END 
 
+relevant_docs = get_relevant_docs(query, final_doc_list )
 if len(messages) == 0 :  
-    relevant_docs = get_relevant_docs(query, final_doc_list )
-
-    qa = define_qa(relevant_docs)
     
-answer = get_answer(query, qa)
+    qa_chain = define_qa(relevant_docs)
+    
+answer = get_answer(query, qa_chain, relevant_docs)
 
 
 messages.append( { "sender": f"{query}", "response": f"{answer}"   }  ) 
@@ -64,23 +64,34 @@ from langchain.memory import ConversationSummaryMemory
 
 
 
-def get_answer(query, qa):
+def get_answer(query, qa_chain, relevant_docs ):
+    
+    qa =  load_qa_chain(llm, chain_type="stuff")
     
     result = qa(query)
-    return result["answer"]
+    answer =  qa_chain.run(input_documents=relevant_docs,
+     question=query)
+    return answer
 
 
-def define_qa(relevant_docs = None): 
+   similar_docs = get_similiar_docs(query)
+  answer = qa_chain.run(input_documents=similar_docs, question=query)
 
-     llm = ChatOpenAI(model_name="gpt-4")
-     if not relevant_docs: 
-       relevant_docs = similar_docs(query,  3 ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
-     llm = ChatOpenAI(model_name="gpt-3.5")
+
+
+def define_qa(): 
+     
+     
+     model_name = "text-davinci-003"
+     # model_name = "gpt-3.5-turbo"
+     # model_name = "gpt-4"
+     llm = OpenAI(model_name=model_name)
+     chain = load_qa_chain(llm, chain_type="stuff")
+
+     llm = ChatOpenAI(model_name="gpt-3.5-turbo")
+     qa_chain =load_qa_chain(llm, chain_type="stuff")
     
-     memory = ConversationSummaryMemory(llm=llm,  memory_key="chat_history", return_messages=True)
-     qa =ConversationalRetrievalChain.from_llm(llm, retriever=relevant_docs, memory=memory)
-    
-    return qa 
+     return qa_chain 
 
 
 # PDF UPLOAD --> INTO TEXT DOCUMENT --> EMBEDDING FUNCTION -->  PUSH INTO PINECONE WITH THEIR EMBEDDINGS
