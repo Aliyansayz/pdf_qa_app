@@ -4,6 +4,8 @@ import os
 app = Flask(__name__)
 
 # Set the environment variables in your system or container
+
+os.environ["OPENAI_API_KEY"] = ""
 os.environ["key"] = "some_key"
 os.environ["server"] = "some_server"
 os.environ["dbname"] = "some_dbname"
@@ -23,7 +25,7 @@ def api():
         os.environ["key"] = key
         os.environ["server"] = server
         os.environ["dbname"] = dbname
-        os.environ["api_key"] = api_key
+        os.environ["OPENAI_API_KEY"] = api_key
         return "Environment variables saved successfully."
 
 
