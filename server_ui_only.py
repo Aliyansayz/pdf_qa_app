@@ -7,6 +7,28 @@ global  final_docs_list, uploaded
 
 uploaded = False
 
+keywords = {
+    "cars": ["What is the best car to buy?", "How to maintain your car?", "How to sell your car?"],
+    "animals": ["What are some endangered animals?", "How to adopt a pet?", "How to train your dog?"],
+    "sports": ["Who won the last Olympics?", "How to play soccer?", "How to improve your fitness?"]
+}
+
+@app.route("/suggestions")
+def suggestions():
+    # Get the term from the query string
+    term = request.args.get("term")
+    # Initialize an empty list for the suggestions
+    suggestions = []
+    # Loop through the keywords and phrases
+    for keyword, phrases in keywords.items():
+        # Check if the term matches or is a substring of the keyword
+        if term == keyword or term in keyword:
+            # Add the phrases to the suggestions list
+            suggestions.extend(phrases)
+    # Return the suggestions as JSON data
+    return jsonify(suggestions)
+
+
 @app.route('/upload', methods=['POST'])
 def upload():
     if request.method == 'POST':
