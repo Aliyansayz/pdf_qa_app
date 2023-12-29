@@ -62,7 +62,7 @@ function record() {
 // Wait for the document to be ready
 $(document).ready(function() {
     // Select the text input with the id of "query"
-    $("#query").autocomplete({
+    $("#message-input").autocomplete({
         // Specify a function for the source option
         source: function(request, response) {
             // Use the jQuery ajax method to request the suggestions from the Flask app
