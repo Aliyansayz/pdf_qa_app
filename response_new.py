@@ -1,6 +1,11 @@
 import os
 import chromadb
 import PyPDF2
+import langchain
+
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import Pinecone
+from langchain.llms import OpenAI
 
 # Import necessary modules from langchain
 from langchain.llms import  OpenAI
@@ -13,3 +18,4 @@ from langchain.vectorstores import Chroma
 
 # Load environment variables
 load_dotenv()
+
