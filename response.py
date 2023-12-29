@@ -3,8 +3,10 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 from langchain.llms import OpenAI
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
-from langchain.document_loaders import UnstructuredHTMLLoader
-from langchain.document_loaders import UnstructuredMarkdownLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+# from langchain.document_loaders import UnstructuredHTMLLoader
+# from langchain.document_loaders import UnstructuredMarkdownLoader
 from langchain.document_loaders import PyPDFLoader
 from langchain.document_loaders import Docx2txtLoader
 from langchain.chains.question_answering import load_qa_chain
@@ -23,7 +25,7 @@ import re
 # ____________________________________________
 WILL BE USED IN FLASK APP IN FRONT END 
 
-host: https://arabic-bot-74438d8.svc.gcp-starter.pinecone.io
+# host: https://arabic-bot-74438d8.svc.gcp-starter.pinecone.io
 pinecone_environment = "gcp-starter"
 pinecone_index_name  = "arabic-bot"
 pinecoy_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
@@ -52,13 +54,13 @@ def get_relevant_docs(query, embeddings, unique_id, final_doc_list = None ):
   
   if final_doc_list:
       try:
-              push_to_pinecone("ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,final_docs_list) 
-              relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
+              push_to_pinecone(pinecoy_api_key, pinecone_environment, pinecone_index_name, embeddings,  final_docs_list) 
+              relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings, unique_id )
       except:
-              relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
+              relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings, unique_id )
  
   else :
-      relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
+      relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings, unique_id )
   
   return  relevant_docs
    
@@ -72,7 +74,7 @@ def get_relevant_docs(query, embeddings, unique_id, final_doc_list = None ):
 
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
-from langchain.memory import ConversationSummaryMemory
+# from langchain.memory import ConversationSummaryMemory
 
 
 
@@ -83,28 +85,39 @@ def get_answer(query, qa_chain, relevant_docs ):
     result = qa(query)
     answer =  qa_chain.run(input_documents=relevant_docs,
      question=query)
+    
     return answer
 
 
-   similar_docs = get_similiar_docs(query)
-  answer = qa_chain.run(input_documents=similar_docs, question=query)
+   # similar_docs = get_similiar_docs(query)
+   # answer = qa_chain.run(input_documents=similar_docs, question=query)
 
 
 
 def define_qa(): 
-     
-     
+       
      model_name = "text-davinci-003"
      # model_name = "gpt-3.5-turbo"
      # model_name = "gpt-4"
      llm = OpenAI(model_name=model_name)
-     chain = load_qa_chain(llm, chain_type="stuff")
 
-     llm = ChatOpenAI(model_name="gpt-3.5-turbo")
      qa_chain =load_qa_chain(llm, chain_type="stuff")
     
      return qa_chain 
 
+
+# directory = '/content/data'
+
+def load_docs(directory):
+  loader = DirectoryLoader(directory)
+  documents = loader.load()
+  return documents
+
+
+def split_docs(documents, chunk_size=1000, chunk_overlap=0):
+  text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+  docs = text_splitter.split_documents(documents)
+  return docs
 
 # PDF UPLOAD --> INTO TEXT DOCUMENT --> EMBEDDING FUNCTION -->  PUSH INTO PINECONE WITH THEIR EMBEDDINGS
 
