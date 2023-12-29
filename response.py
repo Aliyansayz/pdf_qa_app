@@ -22,9 +22,12 @@ import re
 WILL BE USED IN FLASK APP IN FRONT END 
 
 if len(messages) == 0 :  
-    qa = define_qa(relevant_docs)
+    relevant_docs = get_relevant_docs(query, final_doc_list )
 
-answer = save_answer(query, final_doc_list = None )
+    qa = define_qa(relevant_docs)
+    
+answer = get_answer(query, qa)
+
 
 messages.append( { "sender": f"{query}", "response": f"{answer}"   }  ) 
 
@@ -32,7 +35,7 @@ messages.append( { "sender": f"{query}", "response": f"{answer}"   }  )
         # message.sender
         # message.response
 
-def save_answer(query, final_doc_list = None ):
+def get_relevant_docs(query,  final_doc_list = None ):
   
   document_count = 3
   if final_doc_list:
@@ -44,12 +47,14 @@ def save_answer(query, final_doc_list = None ):
  
   else :
       relevant_docs = similar_docs(query, document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
-    
+  
+  return  relevant_docs
+   
   # names =  metadata_filename(relevant_docs )
   # scores = get_score(relevant_docs)
   # content = docs_content(relevant_docs)
   
-  answer = get_answer(query, relevant_docs)
+  answer = get_answer(query, qa)
   return answer 
 # ____________________________________________
 
@@ -59,14 +64,9 @@ from langchain.memory import ConversationSummaryMemory
 
 
 
-def get_answer(query, relevant_docs):
+def get_answer(query, qa):
     
-    llm = ChatOpenAI(model_name="gpt-4")
-    
-    memory = ConversationSummaryMemory(llm=llm, memory_key="chat_history", return_messages=True)
-    qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
-    result = qa(question)
-  
+    result = qa(query)
     return result["answer"]
 
 
@@ -74,11 +74,11 @@ def define_qa(relevant_docs = None):
 
      llm = ChatOpenAI(model_name="gpt-4")
      if not relevant_docs: 
-       relevant_docs = similar_docs(query,  document_count ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
-     llm = ChatOpenAI(model_name="gpt-4")
+       relevant_docs = similar_docs(query,  3 ,"ad12a7c3-b36f-4b48-986e-5157cca233ef","gcp-starter","resume-db",embeddings,st.session_state['unique_id'])
+     llm = ChatOpenAI(model_name="gpt-3.5")
     
-    memory = ConversationSummaryMemory(llm=llm,  memory_key="chat_history", return_messages=True)
-    qa = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
+     memory = ConversationSummaryMemory(llm=llm,  memory_key="chat_history", return_messages=True)
+     qa =ConversationalRetrievalChain.from_llm(llm, retriever=relevant_docs, memory=memory)
     
     return qa 
 
