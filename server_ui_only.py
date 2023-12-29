@@ -72,6 +72,8 @@ def home():
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
             <!-- Add FontAwesome -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
             <script src="./static/script.js"></script>
             <style>
 
@@ -208,7 +210,8 @@ def home():
   
                 }
             </style>
-           
+          
+    
         </head>
         <body>
 
