@@ -1,32 +1,90 @@
 import uuid
 from flask import Flask, render_template_string, request, redirect, url_for
 from response import *
+from flask import Flask, render_template_string, request, redirect, url_for, jsonify
+from werkzeug.utils import secure_filename
+
 
 app = Flask(__name__)
+global  final_docs_list, uploaded
 
-global  final_docs_list
-# Use a global list for simplicity. In a real application, you'd use a database.
+app.config['UPLOAD_FOLDER'] = "/documents" 
+
+uploaded = False
+
+keywords = {
+    "cars": ["What is the best car to buy?", "How to maintain your car?", "How to sell your car?"],
+    "animals": ["What are some endangered animals?", "How to adopt a pet?", "How to train your dog?"],
+    "sports": ["Who won the last Olympics?", "How to play soccer?", "How to improve your fitness?"]
+}
+
+@app.route("/suggestions")
+def suggestions():
+    # Get the term from the query string
+    term = request.args.get("term")
+    # Initialize an empty list for the suggestions
+    suggestions = []
+    # Loop through the keywords and phrases
+    for keyword, phrases in keywords.items():
+        # Check if the term matches or is a substring of the keyword
+        if term == keyword or term in keyword:
+            # Add the phrases to the suggestions list
+            suggestions.extend(phrases)
+    # Return the suggestions as JSON data
+    return jsonify(suggestions)
+
 
 @app.route('/upload', methods=['POST'])
 def upload():
     if request.method == 'POST':
-        files = request.files.getlist('file')
-        unique_id = uuid.uuid4()
-        final_docs_list = create_docs(files , unique_id )    
-        
-                    
+        uploaded = True
+        files = request.files.getlist('files')
+        filenames = []
+        for file in files:
+            print(file.filename)
+            app.config['UPLOAD_FOLDER']
+            file.save(os.path.join( directory, filename ))
+            # final_docs_list.append(file)
+        return redirect(url_for('home', messages=messages, uploaded=True))
 
 
+# Use a global list for simplicity. In a real application, you'd use a database.
+
+global messages
 messages = []
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global messages
     if request.method == 'POST':
-        if 'send' in request.form:
+        if 'files' not in request.files.getlist('files'):
+            final_docs_list = None
+            print("No files found")
+        else: 
+            files = request.files.getlist('file')
+            # final_docs_list = create_docs(files , unique_id )
+            # print(files)
+            for file in files:
+                filename = file.filename
+                
+                file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
+
+        if 'send'   in  request.form:
+            unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
+            query = request.form.get('message')
+            if files : 
+                docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id)
+                docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
+                final_doc_list = docs_chunk
+            if len(messages) == 0 : 
+                relevant_docs = get_relevant_docs(query, embeddings, unique_id, final_doc_list  )
+                qa_chain = define_qa()
+            else :
+                relevant_docs = get_relevant_docs(query, embeddings, unique_id)
+                answer = get_answer(query, qa_chain, relevant_docs)
             message = request.form.get('message')
-            answer = save_answer(query, final_doc_list )
             # messages.append({'text': message, 'sender': 'user'}) 
-            messages.append({'response': f'{answer}' , 'sender': f"{message}" } )
+            messages.append({'text': f'Possible answer from document: {answer}' , 'sender': f"{message}" } )
         
         elif 'reset' in request.form:
             messages = []
@@ -37,6 +95,8 @@ def home():
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
             <!-- Add FontAwesome -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
             <script src="./static/script.js"></script>
             <style>
 
@@ -55,15 +115,20 @@ def home():
                 .display-4 {
                     font-weight: 700; /* Bold */
                 }
+
                 .lead {
                     font-weight: 400; /* Regular */
                 }
+
+
                 .container {
                     width: 100%;
                 }
+
                 .row {
                     margin: 0;
                 }
+
                 .chat-element {
                     height: 200px;
                     overflow-y: auto;
@@ -80,15 +145,18 @@ def home():
                     word-wrap: break-word; /* This will prevent long text from overflowing */
                     display: inline-block; /* This will make the width of the box adjust to the text */
                 }
+
                 .sender {
                     background-color: #008000; /* Emerald Green */
                     align-self: flex-end; /* This will align the sender's messages to the right */
                 }
+
                 .bot {
                     background-color: #808080; /* Gray */
                     align-self: flex-start; /* This will align the bot's responses to the left */
                 }
 
+                
                 .message {
                     margin: 10px;
                     padding: 10px;
@@ -150,21 +218,23 @@ def home():
                     border-radius: 40px;
                     border: 1px solid #2d2d2d;
                     }
-                    #reset-button {
-                    border: none;
-                    font: inherit;
-                    background-color: transparent;
-                    margin: 0;
-                    appearance: none;
-                    padding: 10px 12px;
-                    cursor: pointer;
-                    font-size: 24px;
-                    display: flex;
-                    }
+
+                        #reset-button {
+                        border: none;
+                        font: inherit;
+                        background-color: transparent;
+                        margin: 0;
+                        appearance: none;
+                        padding: 10px 12px;
+                        cursor: pointer;
+                        font-size: 24px;
+                        display: flex;
+                        }
   
                 }
             </style>
-           
+          
+    
         </head>
         <body>
 
@@ -189,11 +259,17 @@ def home():
             <div class="container">
     <div class="row">
         <div>
-            <form action="/upload" method="POST" enctype="multipart/form-data">
-        
-                <input type="file" id="file-upload" accept=".pdf" hidden name="file[]" multiple="">
-                <button type="submit"  id="upload-button" class="btn btn-primary btn-sm">Upload File</button>
-            </form>
+            {% if not uploaded %}
+                <form action="/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" name="files" accept=".pdf" multiple />
+                <input type="submit" id="upload-button" class="btn btn-primary btn-sm" value="Upload">
+                </form>
+
+            {% elif uploaded %}
+                <p>Successfully Uploaded</p>
+            {% endif %}
+            
+            
         </div>
         <!-- Chat Element -->
         <div class="col-12">
@@ -203,13 +279,49 @@ def home():
                         <div class="me">{{ message.sender }}</div>
                     </div>
                     <div class="message-box bot" style="text-align: left;">
-                        <div class="message-line">{{ message.response }}</div>
+                        <div class="message-line">{{ message.text }}</div>
                     </div>
                 {% endfor %}
             </div>
         </div>
     </div>
 </div>
+
+
+                    
+                </div>
+    
+
+                <form method="post" class="form-inline justify-content-center"  >
+                    <input type="text" id="message-input" name="message"  class="form-control mb-2 mr-sm-2" style="width: 80%;" placeholder="Type your message here...">
+                    
+                    <button  name="send" id="send-button" class="btn btn-primary send">
+                            <i class='fa fa-paper-plane'></i>
+                        </button>
+                    <button type="button" onclick="record()" id="speak-button"  class="btn btn-primary send"><i class="fa fa-microphone"></i></button>
+                    <button name="reset" id="reset-button" class="btn btn-primary reset">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                        </div>
+                
+                </form>
+                <div>
+                    <select id="language" name="language">
+                    <option value="English">English</option>
+                    <option value="Urdu">Urdu</option>
+                    <option value="Arabic">Arabic</option>
+                    <option value="French">French</option>
+                    <option value="Spanish">Spanish</option>
+                    </select>
+                </div>
+            </div>
+
+        </body>
+    </html>
+    """, messages=messages, uploaded=False)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
                     
