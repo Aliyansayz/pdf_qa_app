@@ -32,7 +32,7 @@ pinecone_index_name  = "arabic-bot"
 pinecoy_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
 
 embeddings = OpenAIEmbeddings(model_name="ada")
-unique_id  = 
+unique_id  =             "aaa365fe031e4b5ab90aba54eaf6012e"
 
 if len(messages) == 0 :  
     relevant_docs = get_relevant_docs(query, embeddings, unique_id, final_doc_list )
