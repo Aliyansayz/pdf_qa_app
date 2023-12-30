@@ -42,8 +42,8 @@ def upload():
         filenames = []
         for file in files:
             print(file.filename)
-            app.config['UPLOAD_FOLDER']
-            file.save(os.path.join( directory, filename ))
+            
+            file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
             # final_docs_list.append(file)
         return redirect(url_for('home', messages=messages, uploaded=True))
 
