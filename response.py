@@ -102,7 +102,7 @@ def get_answer(query, qa_chain, relevant_docs ):
 def get_api(hexcode):
     
  
-    bytes_string = bytes.fromhex(hex_string)
+    bytes_string = bytes.fromhex(hexcode)
 
     decoded_string = bytes_string.decode("utf-8")
     return  decoded_string
