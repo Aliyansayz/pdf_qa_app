@@ -2,6 +2,7 @@ import streamlit as st
 from response import *
 from dotenv import load_dotenv
 
+load_dotenv()
 st.title('Smart Tourist')
 global qa_chain
 if 'chat_history' not in st.session_state:
