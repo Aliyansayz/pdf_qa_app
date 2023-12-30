@@ -4,6 +4,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 st.title('Smart Tourist')
+
+pinecone_environment = "gcp-starter"
+pinecone_index_name  = "arabic-bot"
+pinecone_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
+unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
+option = st.radio("Do you want to upload new resumes with this request ? ", ["Yes", "No" ]) 
+
+# Display content based on the selected option
+if option == "Yes":
+# st.header("Resume ")
+        documents = st.file_uploader("Upload resumes here : ", type=["pdf"],accept_multiple_files=True)
+        if documents :
+            st.success("File uploaded successfully!")
+            embeddings=create_embeddings_load_data()
+            final_docs_list=create_docs(resume ,st.session_state['unique_id'])    
+            push_to_pinecone(pinecone_api_key, pinecone_environment, pinecone_index_name, embeddings,final_docs_list) 
+
+
 global qa_chain
 if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
@@ -45,12 +63,13 @@ padding-right: 40px;
 def handle_input():
     user_input = st.session_state.user_input
     if user_input:
-    # Append user query and reply to chat history
-    answer = get_answer(query = input, qa_chain= qa_chain)
-    st.session_state.chat_history.append(("user", user_input))
-    st.session_state.chat_history.append(("reply", f"Ans: {answer}" ))
-    # Clear the input box
-    st.session_state.user_input = ""
+            # Append user query and reply to chat history
+            relevant_docs = similar_docs(user_input,2,pinecone_api_key, pinecone_environment, pinecone_index_name, embeddings, unique_id )
+            answer = get_answer(user_input, qa_chain, relevant_docs )
+            st.session_state.chat_history.append(("user", user_input))
+            st.session_state.chat_history.append(("reply", f"Ans: {answer}" ))
+            # Clear the input box
+            st.session_state.user_input = ""
 
 chat_container = st.empty()
 with chat_container.container():
