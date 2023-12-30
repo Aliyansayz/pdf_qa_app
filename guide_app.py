@@ -1,11 +1,11 @@
-
-
 import streamlit as st
+from response import *
+
 
 st.title('Smart Tourist')
 
 if 'chat_history' not in st.session_state:
-st.session_state.chat_history = []
+        st.session_state.chat_history = []
 
 st.markdown("""
 <style>
