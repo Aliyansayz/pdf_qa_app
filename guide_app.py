@@ -1,8 +1,8 @@
 import streamlit as st
 from response import *
-from dotenv import load_dotenv
+# from dotenv import load_dotenv 
 
-load_dotenv()
+# load_dotenv()
 st.title('Smart Tourist')
 
 pinecone_environment = "gcp-starter"
@@ -17,7 +17,8 @@ if option == "Yes":
         documents = st.file_uploader("Upload resumes here : ", type=["pdf"],accept_multiple_files=True)
         if documents :
             st.success("File uploaded successfully!")
-            embeddings=create_embeddings_load_data()
+            try: embeddings=create_embeddings_load_data()
+            except: pass
             final_docs_list=create_docs(resume ,st.session_state['unique_id'])    
             push_to_pinecone(pinecone_api_key, pinecone_environment, pinecone_index_name, embeddings,final_docs_list) 
 
@@ -25,7 +26,9 @@ if option == "Yes":
 global qa_chain
 if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
-        qa_chain = define_qa()
+        try: qa_chain = define_qa()
+        except: pass
+        
 
 st.markdown("""
 <style>
@@ -75,13 +78,9 @@ chat_container = st.empty()
 with chat_container.container():
     for message_type, message in st.session_state.chat_history:
       if message_type == "user":
-          st.markdown(f'
-          {message}
-          ', unsafe_allow_html=True)
+          st.markdown(f'{message}', unsafe_allow_html=True)
       elif message_type == "reply":
-          st.markdown(f'
-          {message}
-          ', unsafe_allow_html=True)
+          st.markdown(f'{message}', unsafe_allow_html=True)
 
 
 col1, col2 = st.columns([5, 1], gap="small")
@@ -93,3 +92,19 @@ with col1:
       args=())
 with col2:
       st.markdown('🠕', unsafe_allow_html=True)
+
+
+st.markdown("### Services")
+btn1, btn2, btn3, btn4, btn5, btn6 = st.columns(6)
+if btn1.button("Emergency Services"):
+    update_input("What are the safety precautions I should take during Hajj?")
+if btn2.button("Hotel Services"):
+    update_input("What types of accommodation are available during Hajj?")
+if btn3.button("Waste Trash Clean"):
+    update_input("How can I contribute to a clean and sanitary environment during Hajj?")
+if btn4.button("Health Medical Vaccine"):
+    update_input("What common health risks are associated with Hajj?")
+if btn5.button("Transportation"):
+    update_input("How can I get around Mecca and Medina during Hajj?")
+if btn6.button("Food Water Diet"):
+    update_input("What kind of food will be available?")
