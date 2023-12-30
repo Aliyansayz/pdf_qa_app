@@ -140,7 +140,7 @@ def create_docs(directory, unique_id):
 
       # Use PDFLoader for .pdf files
       if ext == "pdf":
-          loader = PyPDFLoader(filename)
+          loader = PyPDFLoader(filepath)
           doc = loader.load()
 
       else:
