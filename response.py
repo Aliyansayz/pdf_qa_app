@@ -140,6 +140,30 @@ def split_docs(documents, chunk_size=1000, chunk_overlap=0):
 
 # QUERY MATCH --> SIMILAR SEARCH --> RELEVANT DOCS --> RELEVANT DOCS INTO SUMMARY 
 
+def create_docs(user_file_list, unique_id):
+  pdfloader = PDFReader()
+  user_file_list = os.listdir(directory)
+  docs = []
+  for filename in user_file_list:
+
+      ext = filename.split(".")[-1]
+
+
+      # Use PDFLoader for .pdf files
+      if ext == "pdf":
+          loader = PyPDFLoader(filename)
+          doc = loader.load()
+
+      
+      # Skip other file types
+      else:
+          continue
+      docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+
+  return docs
+
+
+
 def create_docs_for_flask_web(directory, unique_id):
 
   pdfloader = PDFReader()
