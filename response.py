@@ -5,6 +5,8 @@ from langchain.vectorstores import Pinecone
 from langchain.llms import OpenAI
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from llama_index import download_loader
+
 
 
 
