@@ -1,4 +1,4 @@
-flask
+streamlit
 openai
 llama-index
 langchain
