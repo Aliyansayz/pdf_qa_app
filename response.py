@@ -6,6 +6,8 @@ from langchain.llms import OpenAI
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
+
+
 # from langchain.document_loaders import UnstructuredHTMLLoader
 # from langchain.document_loaders import UnstructuredMarkdownLoader
 from langchain.document_loaders import PyPDFLoader
@@ -127,8 +129,32 @@ def split_docs(documents, chunk_size=1000, chunk_overlap=0):
 
 # QUERY MATCH --> SIMILAR SEARCH --> RELEVANT DOCS --> RELEVANT DOCS INTO SUMMARY 
 
-
 def create_docs(directory, unique_id):
+
+  pdfloader = PDFReader()
+  user_file_list = os.listdir(directory)
+  docs = []
+
+  for filename in user_file_list:
+    
+      filepath = os.path.join(directory, filename)
+      ext = filename.split(".")[-1]
+
+      # Use PDFLoader for .pdf files
+      if ext == "pdf":
+          
+          doc = pdfloader.load_data(file=Path(f'{filepath}'))
+          # loader = PyPDFLoader(filepath)
+          return doc
+      else:
+          continue
+      docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+
+  return docs
+
+
+
+def create_docs_not_working(directory, unique_id):
   
   user_file_list = os.listdir(directory)
   docs = []
