@@ -39,7 +39,6 @@ padding-right: 40px;
 }
 </style>
 """, unsafe_allow_html=True)
-Function to handle text input and send button
 
 def handle_input():
     user_input = st.session_state.user_input
