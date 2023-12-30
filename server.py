@@ -1,4 +1,4 @@
-import uuid
+import openai
 from flask import Flask, render_template_string, request, redirect, url_for
 from response import *
 from flask import Flask, render_template_string, request, redirect, url_for, jsonify
@@ -11,6 +11,7 @@ global  final_docs_list, uploaded
 app.config['UPLOAD_FOLDER'] = "/documents" 
 
 uploaded = False
+openai.api_key = get_api(hexcode="736b2d56534975564878354d444669374b45733054704c5433426c626b464a6f4c316c7556506b696767546469465574496379")
 unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
 
 keywords = {
