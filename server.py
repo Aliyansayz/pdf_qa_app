@@ -44,7 +44,11 @@ def upload():
             print(file.filename)
             
             file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
-            # final_docs_list.append(file)
+        docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id)
+        docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
+        final_doc_list = docs_chunk
+        relevant_docs = get_relevant_docs(query, embeddings, unique_id, final_doc_list )
+
         return redirect(url_for('home', messages=messages, uploaded=True))
 
 
