@@ -1,8 +1,10 @@
 import os 
+from dotenv import load_dotenv
 from flask import Flask, render_template_string, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
 from response import * 
 
+load_dotenv()
 app = Flask(__name__)
 global  final_docs_list, uploaded
 
@@ -86,6 +88,7 @@ def upload():
         docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id)
         docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
         push_to_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings,docs)
+        print("uploaded to vector database")
         for file in os.listdir( app.config['UPLOAD_FOLDER'] ):
             print(file)
         return redirect(url_for('home', messages=messages, uploaded=uploaded))
@@ -128,9 +131,8 @@ def home():
                 relevant_docs = get_relevant_docs(query, embeddings, unique_id)
             
             answer = get_answer(query, qa_chain, relevant_docs)
-            message = request.form.get('message')
             # messages.append({'text': message, 'sender': 'user'}) 
-            messages.append({'text': f'Possible answer from document: {message}' , 'sender': f"{message}" } )
+            messages.append({'text': f'Possible answer document: {answer}' , 'sender': f"{query}" } )
         
         elif 'reset' in request.form:
             messages = []
