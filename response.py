@@ -21,8 +21,8 @@ from langchain.schema import Document
 import pandas as pd
 import requests
 import pinecone
-from pypdf import PdfReader
 from langchain.llms.openai import OpenAI
+from langchain.chains.summarize import load_summarize_chain
 import numpy as np
 import re
 
@@ -30,12 +30,12 @@ import re
 # WILL BE USED IN FLASK APP IN FRONT END 
 
 # host: https://arabic-bot-74438d8.svc.gcp-starter.pinecone.io
-pinecone_environment = "gcp-starter"
-pinecone_index_name  = "arabic-bot"
-pinecoy_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
+# pinecone_environment = "gcp-starter"
+# pinecone_index_name  = "arabic-bot"
+# pinecoy_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
 
-embeddings = OpenAIEmbeddings(model_name="ada")
-unique_id  = "aaa365fe031e4b5ab90aba54eaf6012e"
+# embeddings = OpenAIEmbeddings(model_name="ada")
+# unique_id  = "aaa365fe031e4b5ab90aba54eaf6012e"
 
 # if len(messages) == 0 :  
 #     relevant_docs = get_relevant_docs(query, embeddings, unique_id, final_doc_list )
@@ -46,7 +46,7 @@ unique_id  = "aaa365fe031e4b5ab90aba54eaf6012e"
 # answer = get_answer(query, qa_chain, relevant_docs)
 
 
-messages.append( { "sender": f"{query}", "response": f"{answer}"   }  ) 
+# messages.append( { "sender": f"{query}", "response": f"{answer}"   }  ) 
 
 #  for message in messages: 
         # message.sender
@@ -79,6 +79,8 @@ def get_relevant_docs(query, embeddings, unique_id, final_doc_list = None ):
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 # from langchain.memory import ConversationSummaryMemory
+
+
 
 
 
@@ -138,31 +140,22 @@ def split_docs(documents, chunk_size=1000, chunk_overlap=0):
 
 # QUERY MATCH --> SIMILAR SEARCH --> RELEVANT DOCS --> RELEVANT DOCS INTO SUMMARY 
 
-def create_docs(user_file_list, unique_id):
-  pdfloader = PDFReader()
-  user_file_list = os.listdir(directory)
-  docs = []
-  for filename in user_file_list:
+def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings,unique_id):
 
-      ext = filename.split(".")[-1]
+    pinecone.init(
+    api_key=pinecone_apikey,
+    environment=pinecone_environment
+    )
 
+    index_name = pinecone_index_name
 
-      # Use PDFLoader for .pdf files
-      if ext == "pdf":
-          loader = PyPDFLoader(filename)
-          doc = loader.load()
-
-      
-      # Skip other file types
-      else:
-          continue
-      docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
-
-  return docs
+    index = pull_from_pinecone(pinecone_apikey,pinecone_environment,index_name,embeddings)
+    similar_docs = index.similarity_search_with_score(query, int(k),{"unique_id":unique_id})
+    #print(similar_docs)
+    return similar_docs
 
 
-
-def create_docs_for_flask_web(directory, unique_id):
+def create_docs(directory, unique_id):
 
   pdfloader = PDFReader()
   user_file_list = os.listdir(directory)
@@ -187,26 +180,26 @@ def create_docs_for_flask_web(directory, unique_id):
 
 
 
-def create_docs_not_working(directory, unique_id):
+# def create_docs_not_working(directory, unique_id):
   
-  user_file_list = os.listdir(directory)
-  docs = []
+#   user_file_list = os.listdir(directory)
+#   docs = []
 
-  for filename in user_file_list:
+#   for filename in user_file_list:
     
-      filepath = os.path.join(directory, filename)
-      ext = filename.split(".")[-1]
+#       filepath = os.path.join(directory, filename)
+#       ext = filename.split(".")[-1]
 
-      # Use PDFLoader for .pdf files
-      if ext == "pdf":
-          loader = PyPDFLoader(filepath)
-          doc = loader.load()
+#       # Use PDFLoader for .pdf files
+#       if ext == "pdf":
+#           loader = PyPDFLoader(filepath)
+#           doc = loader.load()
 
-      else:
-          continue
-      docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+#       else:
+#           continue
+#       docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
 
-  return docs
+#   return docs
 
 
 
@@ -221,8 +214,8 @@ def docs_content(relevant_docs):
 
 #Create embeddings instance
 def create_embeddings_load_data():
-    #embeddings = OpenAIEmbeddings()
-    embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2") #  384
+    embeddings = OpenAIEmbeddings( model_name="ada")
+    # embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2") #  384
     return embeddings
 
 
