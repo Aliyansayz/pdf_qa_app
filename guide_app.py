@@ -3,9 +3,10 @@ from response import *
 
 
 st.title('Smart Tourist')
-
+global qa_chain
 if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
+        qa_chain = define_qa()
 
 st.markdown("""
 <style>
