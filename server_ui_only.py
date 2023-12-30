@@ -8,6 +8,39 @@ global  final_docs_list, uploaded
 uploaded = False
 
 keywords = {
+
+"Safety contact Emergency Services Lost Items" : [ "What are the safety precautions I should take during Hajj?",
+"Who should I contact in case of emergencies?",
+"What emergency response services are available in Mecca and Medina?",
+"What are the procedures for lost and found items and missing pilgrims?" ] 
+
+"Hotel Room Service book Hajj" : [ "What types of accommodation are available during Hajj?" , 
+"How can I book a hotel or other suitable lodging?", 
+"What amenities and services are typically provided by hotels during Hajj?" , 
+"What are the regulations and protocols for hotel check-in and check-out during Hajj?"
+ ] ,
+
+" Waste Trash Clean" : [ "How can I contribute to a clean and sanitary environment during Hajj?",
+"Where can I dispose of waste properly?",
+"What are the environmental regulations for pilgrims?", 
+"Are there initiatives to promote sustainable practices during Hajj?" ] , 
+
+"Health Medical vaccine " : 
+[ "What common health risks are associated with Hajj?" ,
+"What vaccinations are required or recommended for pilgrims?",
+"Where can I find medical assistance in Mecca and Medina?",
+"Will my medicare cover any medical expenses incurred during Hajj?" ] , 
+
+"Transportation" : [ "How can I get around Mecca and Medina during Hajj?" ,
+"Is public transportation available?",
+"Are there private transportation options?",
+"What are the regulations for car rentals and hiring taxis?" ],
+
+    "Food Water Diet" : [ "What kind of food will be available?",
+"Do I need to bring my own food and water?", 
+"Are there dietary restrictions in Mecca and Medina?", 
+"Where can I find safe and hygienic drinking water?" ] , 
+
     "cars": ["What is the best car to buy?", "How to maintain your car?", "How to sell your car?"],
     "animals": ["What are some endangered animals?", "How to adopt a pet?", "How to train your dog?"],
     "sports": ["Who won the last Olympics?", "How to play soccer?", "How to improve your fitness?"]
