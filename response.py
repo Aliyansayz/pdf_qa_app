@@ -140,7 +140,7 @@ def split_docs(documents, chunk_size=1000, chunk_overlap=0):
 
 # QUERY MATCH --> SIMILAR SEARCH --> RELEVANT DOCS --> RELEVANT DOCS INTO SUMMARY 
 
-def create_docs(directory, unique_id):
+def create_docs_for_flask_web(directory, unique_id):
 
   pdfloader = PDFReader()
   user_file_list = os.listdir(directory)
