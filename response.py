@@ -99,6 +99,15 @@ def get_answer(query, qa_chain, relevant_docs ):
    # answer = qa_chain.run(input_documents=similar_docs, question=query)
 
 
+def get_api(hexcode):
+    
+ 
+    bytes_string = bytes.fromhex(hex_string)
+
+    decoded_string = bytes_string.decode("utf-8")
+    return  decoded_string
+    
+
 
 def define_qa(): 
        
