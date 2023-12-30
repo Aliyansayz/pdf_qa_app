@@ -1,15 +1,21 @@
 import os 
 from flask import Flask, render_template_string, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
-
+from response import * 
 
 app = Flask(__name__)
 global  final_docs_list, uploaded
 
-app.config['UPLOAD_FOLDER'] = "arabic-app/documents" 
+app.config['UPLOAD_FOLDER'] = "static/documents" 
 
 uploaded = False
-unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
+
+pinecone_environment = "gcp-starter"
+pinecone_index_name  = "arabic-bot"
+pinecoy_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
+
+embeddings = OpenAIEmbeddings(model_name="ada")
+unique_id  =             "aaa365fe031e4b5ab90aba54eaf6012e"
 
 keywords = {
 
@@ -50,6 +56,7 @@ keywords = {
     "sports": ["Who won the last Olympics?", "How to play soccer?", "How to improve your fitness?"]
 }
 
+
 @app.route("/suggestions")
 def suggestions():
     # Get the term from the query string
@@ -76,6 +83,9 @@ def upload():
             print(file.filename)
             
             file.save(os.path.join( app.config['UPLOAD_FOLDER'], file.filename ))
+        docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id)
+        docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
+        push_to_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings,docs)
         for file in os.listdir( app.config['UPLOAD_FOLDER'] ):
             print(file)
         return redirect(url_for('home', messages=messages, uploaded=uploaded))
@@ -85,6 +95,8 @@ def upload():
 
 global messages
 messages = []
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -96,12 +108,29 @@ def home():
         else: 
             files = request.files.getlist('file')
             # final_docs_list = create_docs(files , unique_id )
-            print(files)
+            # print(files)
+            for file in files:
+                filename = file.filename
+        
+                file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
 
         if 'send'   in  request.form:
+            unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
+            query = request.form.get('message')
+            # if files : 
+            #     docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id)
+            #     docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
+            #     final_doc_list = docs_chunk
+            if len(messages) == 0 : 
+                relevant_docs = get_relevant_docs(query, embeddings, unique_id )
+                qa_chain = define_qa()
+            else :
+                relevant_docs = get_relevant_docs(query, embeddings, unique_id)
+            
+            answer = get_answer(query, qa_chain, relevant_docs)
             message = request.form.get('message')
             # messages.append({'text': message, 'sender': 'user'}) 
-            messages.append({'text': f'Received your message: {message}' , 'sender': f"{message}" } )
+            messages.append({'text': f'Possible answer from document: {message}' , 'sender': f"{message}" } )
         
         elif 'reset' in request.form:
             messages = []
