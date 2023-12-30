@@ -11,6 +11,7 @@ global  final_docs_list, uploaded
 app.config['UPLOAD_FOLDER'] = "/documents" 
 
 uploaded = False
+unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
 
 keywords = {
     "cars": ["What is the best car to buy?", "How to maintain your car?", "How to sell your car?"],
