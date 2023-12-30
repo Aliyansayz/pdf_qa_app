@@ -12,7 +12,7 @@ keywords = {
 "Safety contact Emergency Services Lost Items" : [ "What are the safety precautions I should take during Hajj?",
 "Who should I contact in case of emergencies?",
 "What emergency response services are available in Mecca and Medina?",
-"What are the procedures for lost and found items and missing pilgrims?" ] 
+"What are the procedures for lost and found items and missing pilgrims?" ] ,
 
 "Hotel Room Service book Hajj" : [ "What types of accommodation are available during Hajj?" , 
 "How can I book a hotel or other suitable lodging?", 
