@@ -7,11 +7,6 @@ from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddi
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from llama_index import download_loader
 
-
-
-
-# from langchain.document_loaders import UnstructuredHTMLLoader
-# from langchain.document_loaders import UnstructuredMarkdownLoader
 from langchain.document_loaders import PyPDFLoader
 from langchain.document_loaders import Docx2txtLoader
 from langchain.document_loaders import DirectoryLoader
@@ -155,23 +150,43 @@ def similar_docs(query,k,pinecone_apikey,pinecone_environment,pinecone_index_nam
     return similar_docs
 
 
-def create_docs(directory, unique_id):
+def create_docs(user_file_list, unique_id):
 
-  pdfloader = PDFReader()
-  user_file_list = os.listdir(directory)
   docs = []
+  PDFReader = download_loader("PDFReader")
 
   for filename in user_file_list:
-    
+
+      filepath = filename
+      ext = filename.split(".")[-1]
+
+      # Use PDFLoader for .pdf files
+      if ext == "pdf":
+          loader = PDFReader()
+          doc = loader.load_data(file=Path(f'./{filename}'))
+          # loader = PyPDFLoader(filepath)
+      else:
+          continue
+      docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+
+  return docs
+
+def create_docs_web(directory, unique_id):
+
+  user_file_list = os.listdir(directory)
+  docs = []
+  PDFReader = download_loader("PDFReader")
+
+  for filename in user_file_list:
+
       filepath = os.path.join(directory, filename)
       ext = filename.split(".")[-1]
 
       # Use PDFLoader for .pdf files
       if ext == "pdf":
-          
-          doc = pdfloader.load_data(file=Path(f'{filepath}'))
+          loader = PDFReader()
+          doc = loader.load_data(file=Path(f'{filepath}'))
           # loader = PyPDFLoader(filepath)
-          return doc
       else:
           continue
       docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
