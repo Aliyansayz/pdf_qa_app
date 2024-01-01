@@ -171,26 +171,31 @@ def create_docs(user_file_list, unique_id):
 
   return docs
 
-def create_docs_web(directory, unique_id):
-
+def create_docs_web(directory, unique_id, stop_idx= None):
+  
   user_file_list = os.listdir(directory)
   docs = []
-  PDFReader = download_loader("PDFReader")
+  for index, filename in enumerate(user_file_list):
 
-  for filename in user_file_list:
-
-      filepath = os.path.join(directory, filename)
+      uploaded = []
       ext = filename.split(".")[-1]
+      filepath = os.path.join(directory, filename)
+
+      if index >= stop_idx : break  
 
       # Use PDFLoader for .pdf files
       if ext == "pdf":
-          loader = PDFReader()
-          doc = loader.load_data(file=Path(f'{filepath}'))
-          # loader = PyPDFLoader(filepath)
+          loader = PyPDFLoader(filepath)
+          doc = loader.load()
+
+      # Skip other file types
       else:
           continue
       docs.append(Document( page_content= doc[0].page_content , metadata={"name": f"{filename}" , "unique_id":unique_id } ) )
+      uploaded.append(filename)
 
+  print("Files Uploaded ", uploaded, len(uploaded))
+  print("Files Not Uploaded", user_file_list[stop_idx:], len(user_file_list[stop_idx:]))
   return docs
 
 
