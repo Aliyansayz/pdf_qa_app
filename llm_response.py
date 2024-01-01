@@ -1,8 +1,8 @@
 from openai import OpenAI
 import os
 
-def initialize_LLM(api_key):
-    os.environ["OPENAI_API_KEY"] = api_key
+def initialize_llm():
+    
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
     return client
 
