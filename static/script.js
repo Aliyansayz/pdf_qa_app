@@ -83,17 +83,20 @@ function loadQuestions() {
   // Define an object with arrays of questions for each food
   const questions = {
     Makkah: [
-      "What is your favorite pizza topping?",
-      "Do you prefer thin crust or thick crust?",
+      "What are the other must-visit places in Makkah ?",
+      "Where can I perform Tawaf around the Kaaba ?",
+      "What is the significance of the Kaaba"
     ],
-    Mana: [
-      "What is your favorite soup?",
-      "Do you prefer creamy or broth-based soups?",
-      "What is your favorite soup accompaniment?",
+    Mina: [
+      "How can I travel back to Makkah from Mina ?",
+      "What is the purpose of staying in Mina during Hajj ?",
+      "What facilities are available in Mina ?",
+      "How can I travel back to Makkah from Mina ?"
     ],
     Arfat: [
-      "What is your favorite rice dish?",
-      "Do you prefer white or brown rice?",
+      "Where can I stay in Arafat during Hajj ?",
+      "What happens on the Day of Arafat, the most important day of Hajj ?"
+    
     ],
   };
   // Get the questions array for the selected food
