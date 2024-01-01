@@ -1,9 +1,12 @@
 from flask import Flask, render_template_string, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
+from llm_response import * 
 
 
 app = Flask(__name__)
 global  final_docs_list, uploaded
+
+client = initialize_llm() 
 
 uploaded = False
 
@@ -325,6 +328,17 @@ def home():
                     </select>
                 </div>
             </div>
+
+< div > 
+ <label for="food">Select your location:</label>
+    <select id="food" onchange="loadQuestions()">
+        <option value="pizza">Makkah</option>
+        <option value="soup">Mana</option>
+        <option value="rice">Arfat</option>
+    </select>
+    <br><br>
+    <div id="questions"></div>
+< / div > 
 
         </body>
     </html>
