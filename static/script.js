@@ -79,7 +79,7 @@ $(document).ready(function() {
 
 
 function loadQuestions() {
-  const food = document.getElementById("food").value;
+  const location = document.getElementById("location").value;
   // Define an object with arrays of questions for each food
   const questions = {
     Makkah: [
@@ -100,11 +100,11 @@ function loadQuestions() {
     ],
   };
   // Get the questions array for the selected food
-  const foodQuestions = questions[food];
+  const locationQuestions = questions[location];
   // Create an empty string to store the HTML list
   let list = "";
   // Iterate over the questions array and append each question as a list item
-  foodQuestions.forEach((question) => {
+  locationQuestions.forEach((question) => {
     list += `<li onclick="copyText('${question}')">${question}</li>`;
   });
   // Wrap the list items in an unordered list element
@@ -117,5 +117,42 @@ function copyText(text) {
   document.getElementById("message-input").value = text;
 
 }
+
+
+function loadfoodQuestions() {
+  const food = document.getElementById("food").value;
+  // Define an object with arrays of questions for each food
+  const questions = {
+    NonGluten: [
+      "Enlist some egg non Gluten breakfast and deserts in Saudi Arabia ?"
+    ],
+    EggFree: [
+        "Enlist some egg free top dishes  in Saudi Arabia ?"
+    ],
+    NonDairy: [
+      "What are top  non dairy products in Saudi Arabia ?"
+    ],
+  };
+  // Get the questions array for the selected food
+  const foodQuestions = questions[food];
+  // Create an empty string to store the HTML list
+  let list = "";
+  // Iterate over the questions array and append each question as a list item
+  foodQuestions.forEach((question) => {
+    list += `<li onclick="copyText('${question}')">${question}</li>`;
+  });
+  // Wrap the list items in an unordered list element
+  list = `<ul>${list}</ul>`;
+  // Set the innerHTML of the questions element to the list
+  document.getElementById("foodquestions").innerHTML = list;
+}
+
+function copyText(text) {
+  document.getElementById("message-input").value = text;
+}
+
+
+
+
 
   
