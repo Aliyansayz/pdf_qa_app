@@ -74,4 +74,19 @@ $(document).ready(function() {
             });
         }
     });
-});
+}
+
+
+function loadQuestions() {
+            const food = document.getElementById("food").value;
+            let questions = "";
+            if (food === "pizza") {
+                questions = "<ul><li>What is your favorite pizza topping?</li><li>Do you prefer thin crust or thick crust?</li></ul>";
+            } else if (food === "soup") {
+                questions = "<ul><li>What is your favorite soup?</li><li>Do you prefer creamy or broth-based soups?</li><li>What is your favorite soup accompaniment?</li></ul>";
+            } else if (food === "rice") {
+                questions = "<ul><li>What is your favorite rice dish?</li><li>Do you prefer white or brown rice?</li></ul>";
+            }
+            document.getElementById("questions").innerHTML = questions;
+        }
+  
