@@ -321,9 +321,9 @@ def home():
 < div > 
  <label for="food">Select your location:</label>
     <select id="food" onchange="loadQuestions()">
-        <option value="pizza">Makkah</option>
-        <option value="soup">Mana</option>
-        <option value="rice">Arfat</option>
+        <option value="Makkah">Makkah</option>
+        <option value="Mina">Mina</option>
+        <option value="Arfat">Arfat</option>
     </select>
     <br><br>
     <div id="questions"></div>
