@@ -319,8 +319,8 @@ def home():
             </div>
 
 < div > 
- <label for="food">Select your location:</label>
-    <select id="food" onchange="loadQuestions()">
+ <label for="location">Select your location:</label>
+    <select id="location" onchange="loadQuestions()">
         <option value="Makkah">Makkah</option>
         <option value="Mina">Mina</option>
         <option value="Arfat">Arfat</option>
@@ -328,6 +328,30 @@ def home():
     <br><br>
     <div id="questions"></div>
 < / div > 
+
+< div > 
+ <label for="location">Select your location:</label>
+    <select id="location" onchange="loadQuestions()">
+        <option value="Makkah">Makkah</option>
+        <option value="Mina">Mina</option>
+        <option value="Arfat">Arfat</option>
+    </select>
+    <br><br>
+    <div id="questions"></div>
+< /div> 
+
+< div > 
+ <label for="food">Select your location:</label>
+    <select id="food" onchange="loadfoodQuestions()">
+        <option value="Non-Gluten">Makkah</option>
+        <option value="Egg Free">Mina</option>
+        <option value="Non Dairy Products">Arfat</option>
+    </select>
+    <br><br>
+    <div id="foodquestions"></div>
+< /div> 
+
+
 
         </body>
     </html>
