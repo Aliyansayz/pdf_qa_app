@@ -95,9 +95,10 @@ def home():
             print(files)
 
         if 'send'   in  request.form:
-            message = request.form.get('message')
+            user_input = request.form.get('message')
+            resoponse = generate_response(client, user_input)
             # messages.append({'text': message, 'sender': 'user'}) 
-            messages.append({'text': f'Received your message: {message}' , 'sender': f"{message}" } )
+            messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
         
         elif 'reset' in request.form:
             messages = []
@@ -271,19 +272,7 @@ def home():
 
             <div class="container">
     <div class="row">
-        <div>
-            {% if not uploaded %}
-                <form action="/upload" method="POST" enctype="multipart/form-data">
-                <input type="file" name="files" accept=".pdf" multiple />
-                <input type="submit" id="upload-button" class="btn btn-primary btn-sm" value="Upload">
-                </form>
-
-            {% elif uploaded %}
-                <p>Successfully Uploaded</p>
-            {% endif %}
-            
-            
-        </div>
+       
         <!-- Chat Element -->
         <div class="col-12">
             <div class="chat-element" style="height: 500px; overflow-y: auto;">
@@ -292,7 +281,7 @@ def home():
                         <div class="me">{{ message.sender }}</div>
                     </div>
                     <div class="message-box bot" style="text-align: left;">
-                        <div class="message-line">{{ message.text }}</div>
+                        <div class="message-line">{{ message.response }}</div>
                     </div>
                 {% endfor %}
             </div>
@@ -346,3 +335,19 @@ def home():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+# Upload section removed.
+ # <div>
+ #            {% if not uploaded %}
+ #                <form action="/upload" method="POST" enctype="multipart/form-data">
+ #                <input type="file" name="files" accept=".pdf" multiple />
+ #                <input type="submit" id="upload-button" class="btn btn-primary btn-sm" value="Upload">
+ #                </form>
+
+ #            {% elif uploaded %}
+ #                <p>Successfully Uploaded</p>
+ #            {% endif %}
+            
+            
+ #        </div>
