@@ -77,16 +77,42 @@ $(document).ready(function() {
 }
 
 
+
 function loadQuestions() {
-            const food = document.getElementById("food").value;
-            let questions = "";
-            if (food === "pizza") {
-                questions = "<ul><li>What is your favorite pizza topping?</li><li>Do you prefer thin crust or thick crust?</li></ul>";
-            } else if (food === "soup") {
-                questions = "<ul><li>What is your favorite soup?</li><li>Do you prefer creamy or broth-based soups?</li><li>What is your favorite soup accompaniment?</li></ul>";
-            } else if (food === "rice") {
-                questions = "<ul><li>What is your favorite rice dish?</li><li>Do you prefer white or brown rice?</li></ul>";
-            }
-            document.getElementById("questions").innerHTML = questions;
-        }
+  const food = document.getElementById("food").value;
+  // Define an object with arrays of questions for each food
+  const questions = {
+    Makkah: [
+      "What is your favorite pizza topping?",
+      "Do you prefer thin crust or thick crust?",
+    ],
+    Mana: [
+      "What is your favorite soup?",
+      "Do you prefer creamy or broth-based soups?",
+      "What is your favorite soup accompaniment?",
+    ],
+    Arfat: [
+      "What is your favorite rice dish?",
+      "Do you prefer white or brown rice?",
+    ],
+  };
+  // Get the questions array for the selected food
+  const foodQuestions = questions[food];
+  // Create an empty string to store the HTML list
+  let list = "";
+  // Iterate over the questions array and append each question as a list item
+  foodQuestions.forEach((question) => {
+    list += `<li onclick="copyText('${question}')">${question}</li>`;
+  });
+  // Wrap the list items in an unordered list element
+  list = `<ul>${list}</ul>`;
+  // Set the innerHTML of the questions element to the list
+  document.getElementById("questions").innerHTML = list;
+}
+
+function copyText(text) {
+  document.getElementById("message-input").value = text;
+
+}
+
   
