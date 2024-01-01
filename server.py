@@ -36,22 +36,61 @@ def suggestions():
     return jsonify(suggestions)
 
 
-@app.route('/upload', methods=['POST'])
-def upload():
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_page():
+    global messages
     if request.method == 'POST':
-        uploaded = True
-        files = request.files.getlist('files')
-        filenames = []
-        for file in files:
-            print(file.filename)
-            
-            file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
-        docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id)
-        docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
-        final_doc_list = docs_chunk
-        relevant_docs = get_relevant_docs(query, embeddings, unique_id, final_doc_list )
+        if 'files' in request.files.getlist('files'):
+            uploaded = False
+            print("No files found")
+    return render_template_string("""
+        <html>
+        <head>
+            <!-- Add Bootstrap CSS -->
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+            <!-- Add FontAwesome -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+         </head>
+        <body>
+        
+        <div class="container">
+    <div class="row">
+        <div>
+            {% if not uploaded %}
+                <form action="/uploading" method="POST" enctype="multipart/form-data">
+                <input type="file" name="files" accept=".pdf" multiple />
+                <input type="submit" id="upload-button" class="btn btn-primary btn-sm" value="Upload">
+                </form>
 
-        return redirect(url_for('home', messages=messages, uploaded=True))
+            {% elif uploaded %}
+                <p>Successfully Uploaded</p>
+            {% endif %}
+            
+        </div> </body>
+    </html>""", messages=messages, uploaded= uploaded)
+
+
+@app.route('/uploading', methods=['POST'])
+def uploading():
+    unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
+
+    if request.method == 'POST':
+       if 'files' in request.files.getlist('files'):
+            files = request.files.getlist('files')
+            filenames = []
+            for file in files:
+                print(file.filename)
+                
+                file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
+    
+            docs = create_docs(app.config['UPLOAD_FOLDER'] , unique_id, )
+            docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
+            embeddings = create_embeddings_load_data()
+            push_to_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings, docs_chunk)
+            # final_doc_list = docs_chunk
+            # relevant_docs = get_relevant_docs(query, embeddings, unique_id, final_doc_list )
+    
+            return redirect(url_for('upload_page', messages=messages, uploaded=True))
 
 
 # Use a global list for simplicity. In a real application, you'd use a database.
@@ -62,20 +101,22 @@ messages = []
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global messages
-    if request.method == 'POST':
-        if 'files' not in request.files.getlist('files'):
-            final_docs_list = None
-            print("No files found")
-        else: 
-            files = request.files.getlist('file')
-            # final_docs_list = create_docs(files , unique_id )
-            # print(files)
-            for file in files:
-                filename = file.filename
-                
-                file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
+    unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
 
-        if 'send'   in  request.form:
+    if request.method == 'POST':
+        # if 'files' not in request.files.getlist('files'):
+        #     final_docs_list = None
+        #     print("No files found")
+        # else: 
+        #     files = request.files.getlist('file')
+        #     # final_docs_list = create_docs(files , unique_id )
+        #     # print(files)
+        #     for file in files:
+        #         filename = file.filename
+                
+        #         file.save(os.path.join( app.config['UPLOAD_FOLDER'], filename ))
+
+        if 'send'  in  request.form:
             unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
             query = request.form.get('message')
             if files : 
@@ -83,7 +124,7 @@ def home():
                 docs_chunk = split_docs(documents, chunk_size=1000, chunk_overlap=0)
                 final_doc_list = docs_chunk
             if len(messages) == 0 : 
-                relevant_docs = get_relevant_docs(query, embeddings, unique_id, final_doc_list  )
+                relevant_docs = get_relevant_docs(query, embeddings, unique_id)
                 qa_chain = define_qa()
             else :
                 relevant_docs = get_relevant_docs(query, embeddings, unique_id)
@@ -91,6 +132,7 @@ def home():
             message = request.form.get('message')
             # messages.append({'text': message, 'sender': 'user'}) 
             messages.append({'text': f'Possible answer from document: {answer}' , 'sender': f"{message}" } )
+
         
         elif 'reset' in request.form:
             messages = []
