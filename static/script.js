@@ -48,6 +48,7 @@ function record() {
       }
     };
 
+
     // Start the recording
     recorder.start();
 
@@ -55,6 +56,7 @@ function record() {
     recordButton.innerHTML = "Stop";
   }
 }
+
 
 
 
@@ -74,85 +76,84 @@ $(document).ready(function() {
             });
         }
     });
+ 
 }
 
-
-
-function loadQuestions() {
-  const location = document.getElementById("location").value;
-  // Define an object with arrays of questions for each food
-  const questions = {
-    Makkah: [
-      "What are the other must-visit places in Makkah ?",
-      "Where can I perform Tawaf around the Kaaba ?",
-      "What is the significance of the Kaaba"
-    ],
-    Mina: [
-      "How can I travel back to Makkah from Mina ?",
-      "What is the purpose of staying in Mina during Hajj ?",
-      "What facilities are available in Mina ?",
-      "How can I travel back to Makkah from Mina ?"
-    ],
-    Arfat: [
-      "Where can I stay in Arafat during Hajj ?",
-      "What happens on the Day of Arafat, the most important day of Hajj ?"
-    
-    ],
-  };
-  // Get the questions array for the selected food
-  const locationQuestions = questions[location];
-  // Create an empty string to store the HTML list
-  let list = "";
-  // Iterate over the questions array and append each question as a list item
-  locationQuestions.forEach((question) => {
-    list += `<li onclick="copyText('${question}')">${question}</li>`;
-  });
-  // Wrap the list items in an unordered list element
-  list = `<ul>${list}</ul>`;
-  // Set the innerHTML of the questions element to the list
-  document.getElementById("questions").innerHTML = list;
-}
-
-function copyText(text) {
-  document.getElementById("message-input").value = text;
-
-}
-
-
-function loadfoodQuestions() {
-  const food = document.getElementById("food").value;
-  // Define an object with arrays of questions for each food
-  const questions = {
-    NonGluten: [
-      "Enlist some egg non Gluten breakfast and deserts in Saudi Arabia ?"
-    ],
-    EggFree: [
-        "Enlist some egg free top dishes  in Saudi Arabia ?"
-    ],
-    NonDairy: [
-      "What are top  non dairy products in Saudi Arabia ?"
-    ],
-  };
-  // Get the questions array for the selected food
-  const foodQuestions = questions[food];
-  // Create an empty string to store the HTML list
-  let list = "";
-  // Iterate over the questions array and append each question as a list item
-  foodQuestions.forEach((question) => {
-    list += `<li onclick="copyText('${question}')">${question}</li>`;
-  });
-  // Wrap the list items in an unordered list element
-  list = `<ul>${list}</ul>`;
-  // Set the innerHTML of the questions element to the list
-  document.getElementById("foodquestions").innerHTML = list;
-}
-
-function copyText(text) {
-  document.getElementById("message-input").value = text;
-}
-
-
-
-
+, function loadQuestions() {
+    const location = document.getElementById("location").value;
+    // Define an object with arrays of questions for each food
+    const questions = {
+      Makkah: [
+        "What are the other must-visit places in Makkah ?",
+        "Where can I perform Tawaf around the Kaaba ?",
+        "What is the significance of the Kaaba"
+      ],
+      Mina: [
+        "How can I travel back to Makkah from Mina ?",
+        "What is the purpose of staying in Mina during Hajj ?",
+        "What facilities are available in Mina ?",
+        "How can I travel back to Makkah from Mina ?"
+      ],
+      Arfat: [
+        "Where can I stay in Arafat during Hajj ?",
+        "What happens on the Day of Arafat, the most important day of Hajj ?"
+      
+      ],
+    }
+  
+    // Get the questions array for the selected food
+    const locationQuestions = questions[location];
+    // Create an empty string to store the HTML list
+    let list = "";
+    // Iterate over the questions array and append each question as a list item
+    locationQuestions.forEach((question) => {
+      list += `<li onclick="copyText('${question}')">${question}</li>`;
+    });
+    // Wrap the list items in an unordered list element
+    list = `<ul>${list}</ul>`;
+    // Set the innerHTML of the questions element to the list
+    document.getElementById("questions").innerHTML = list;
+  
+},
+  function copyText(text) {
+    document.getElementById("message-input").value = text;
+  
+  }
 
   
+,  function loadfoodQuestions() {
+
+    const food = document.getElementById("food").value;
+    // Define an object with arrays of questions for each food
+    const questions = {
+      NonGluten: [
+        "Enlist some egg non Gluten breakfast and deserts in Saudi Arabia ?"
+      ],
+      EggFree: [
+          "Enlist some egg free top dishes  in Saudi Arabia ?"
+      ],
+      NonDairy: [
+        "What are top  non dairy products in Saudi Arabia ?"
+      ],
+    };
+    // Get the questions array for the selected food
+    const foodQuestions = questions[food];
+    // Create an empty string to store the HTML list
+    let list = "";
+    // Iterate over the questions array and append each question as a list item
+    foodQuestions.forEach((question) => {
+      list += `<li onclick="copyfText('${question}')">${question}</li>`;
+    });
+    // Wrap the list items in an unordered list element
+    list = `<ul>${list}</ul>`;
+    // Set the innerHTML of the questions element to the list
+    document.getElementById("foodquestions").innerHTML = list;
+}
+,function copyfText(text) {
+        document.getElementById("message-input").value = text;
+    
+}
+    
+  
+
+
