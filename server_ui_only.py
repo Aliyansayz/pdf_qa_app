@@ -1,12 +1,12 @@
 from flask import Flask, render_template_string, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
-from llm_response import * 
+# from llm_response import * 
 
 
 app = Flask(__name__)
 global  final_docs_list, uploaded
 
-client = initialize_llm() 
+# client = initialize_llm() 
 
 uploaded = False
 
@@ -87,7 +87,6 @@ def home():
     global messages
     if request.method == 'POST':
         if 'files' not in request.files.getlist('files'):
-            final_docs_list = None
             print("No files found")
         else: 
             files = request.files.getlist('file')
@@ -96,9 +95,9 @@ def home():
 
         if 'send'   in  request.form:
             user_input = request.form.get('message')
-            resoponse = generate_response(client, user_input)
+            # resoponse = get_response(user_input)
             # messages.append({'text': message, 'sender': 'user'}) 
-            messages.append({'response': f'{resoponse}' , 'sender': f"{user_input}" } )
+            messages.append({'response': f'Receieved msg {resoponse}' , 'sender': f"{user_input}" } )
         
         elif 'reset' in request.form:
             messages = []
@@ -112,6 +111,8 @@ def home():
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
             <script src="./static/script.js"></script>
+           
+            
             <style>
 
                 body {
@@ -248,9 +249,77 @@ def home():
                 }
             </style>
           
-    
+        
+
         </head>
         <body>
+            <script>
+
+        // Define an object that maps each location to an array of questions
+        const locationQuestions = {
+            Makkah: [
+                "What are the other must-visit places in Makkah ?",
+                "Where can I perform Tawaf around the Kaaba ?",
+                "What is the significance of the Kaaba"
+            ],
+            Mina: [
+                "How can I travel back to Makkah from Mina ?",
+                "What is the purpose of staying in Mina during Hajj ?",
+                "What facilities are available in Mina ?",
+                "How can I travel back to Makkah from Mina ?"
+            ],
+            Arfat: [
+                "Where can I stay in Arafat during Hajj ?",
+                "What happens on the Day of Arafat, the most important day of Hajj ?"
+            
+            ],
+        };
+
+        function loadlocationQuestions() {
+            const location = document.getElementById("location").value;
+            let questions = "<ul>";
+            // Loop through the questions array for the selected location and create a list item for each question
+            for (let question of locationQuestions[location]) {
+                questions += `<li onclick="copytextLocation('${question}')">${question}</li>`;
+            }
+            questions += "</ul>";
+            document.getElementById("locquestions").innerHTML = questions;
+        }
+
+        function copytextLocation(text) {
+            document.getElementById("message-input").value = text;
+        }
+
+        //______________________________________________
+
+        // Define an object that maps each food preference to an array of questions
+        const foodQuestions = {
+            NonGluten: [
+                "Enlist some egg non Gluten breakfast and deserts in Saudi Arabia ?"
+            ],
+            EggFree: [
+                "Enlist some egg free top dishes  in Saudi Arabia ?"
+            ],
+            NonDairy: [
+                "What are top  non dairy products in Saudi Arabia ?"
+            ],
+        };
+
+        function loadQuestions() {
+            const food = document.getElementById("food").value;
+            let questions = "<ul>";
+            // Loop through the questions array for the selected food and create a list item for each question
+            for (let question of foodQuestions[food]) {
+                questions += `<li onclick="copyText('${question}')">${question}</li>`;
+            }
+            questions += "</ul>";
+            document.getElementById("foodquestions").innerHTML = questions;
+        }
+
+        function copyText(text) {
+            document.getElementById("message-input").value = text;
+        }
+    </script>
 
          
 
@@ -264,11 +333,14 @@ def home():
 
                 <!-- Description -->
                 <div class="col-12">
-                    <p class="lead">Hello there! I'm your Smart Tourist guide. I can answer anything, with up-to-date information.</p>
+                    <p class="lead">Hello there! I'm your SmarTourist guide. How can I assist you ?</p>
                 </div>
                 </div>
             </div>
-                
+            <div>
+    
+    
+</div>    
 
             <div class="container">
     <div class="row">
@@ -318,41 +390,33 @@ def home():
                 </div>
             </div>
 
-< div > 
- <label for="location">Select your location:</label>
-    <select id="location" onchange="loadQuestions()">
-        <option value="Makkah">Makkah</option>
-        <option value="Mina">Mina</option>
-        <option value="Arfat">Arfat</option>
-    </select>
-    <br><br>
-    <div id="questions"></div>
-< / div > 
+        <div>
+            <h4>FAQs</h4>
 
-< div > 
- <label for="location">Select your location:</label>
-    <select id="location" onchange="loadQuestions()">
-        <option value="Makkah">Makkah</option>
-        <option value="Mina">Mina</option>
-        <option value="Arfat">Arfat</option>
-    </select>
-    <br><br>
-    <div id="questions"></div>
-< /div> 
-
-< div > 
- <label for="food">Select your location:</label>
-    <select id="food" onchange="loadfoodQuestions()">
-        <option value="Non-Gluten">Makkah</option>
-        <option value="Egg Free">Mina</option>
-        <option value="Non Dairy Products">Arfat</option>
-    </select>
-    <br><br>
-    <div id="foodquestions"></div>
-< /div> 
+            <label for="location">Select your location:</label>
+                <select id="location" onchange="loadlocationQuestions()">
+                    <option value="Makkah">Makkah</option>
+                    <option value="Mina">Mina</option>
+                    <option value="Arfat">Arfat</option>
+                </select>
+                <br><br>
+                <div id="locquestions"></div>
 
 
+            <label for="food">Select your food preference:</label>
+                 <select id="food" onchange="loadQuestions()">
+                   <option value="NonGluten">Non Gluten</option>
+                   <option value="EggFree">Egg Free</option>
+                   <option value="NonDairy">Non Dairy</option>
+                    </select>
+                    <br><br>
+                    
+                <div id="foodquestions"></div>
 
+            
+
+        </div> 
+    
         </body>
     </html>
     """, messages=messages, uploaded=uploaded)
