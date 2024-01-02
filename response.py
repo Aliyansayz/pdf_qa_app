@@ -1,11 +1,14 @@
 import os
 import openai
-from langchain.embeddings.openai import OpenAIEmbeddings
+import pinecone
 from langchain.vectorstores import Pinecone
+from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+
+from langchain.embeddings.openai import OpenAIEmbeddings
+
 from langchain.llms import OpenAI
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from llama_index import download_loader
 
 from langchain.document_loaders import PyPDFLoader
 from langchain.document_loaders import Docx2txtLoader
@@ -15,7 +18,6 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.schema import Document 
 import pandas as pd
 import requests
-import pinecone
 from langchain.llms.openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
 import numpy as np
@@ -234,8 +236,8 @@ def docs_content(relevant_docs):
 
 #Create embeddings instance
 def create_embeddings_load_data():
-    embeddings = OpenAIEmbeddings( model_name="ada")
-    # embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2") #  384
+    # embeddings = OpenAIEmbeddings( model_name="ada")
+    embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2") #  384
     return embeddings
 
 
