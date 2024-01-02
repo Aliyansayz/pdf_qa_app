@@ -252,6 +252,19 @@ def push_to_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,em
     Pinecone.from_documents(docs, embeddings, index_name=pinecone_index_name)
     
 
+def get_response(user_input):
+    client = OpenAI()
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": f"{user_input}"}
+        ]
+        )
+
+    return  completion.choices[0].message.content
+
+
 
 def pull_from_pinecone(pinecone_apikey,pinecone_environment,pinecone_index_name,embeddings):
 
