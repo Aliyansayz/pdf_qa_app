@@ -29,7 +29,7 @@ import re
 # host: https://arabic-bot-74438d8.svc.gcp-starter.pinecone.io
 # pinecone_environment = "gcp-starter"
 # pinecone_index_name  = "arabic-bot"
-# pinecoy_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
+# pinecone_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
 
 # embeddings = OpenAIEmbeddings(model_name="ada")
 # unique_id  = "aaa365fe031e4b5ab90aba54eaf6012e"
