@@ -6,13 +6,19 @@ from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
-global  final_docs_list, uploaded
+global  final_docs_list, uploaded, pinecone_environment, pinecone_index_name, pinecone_api_key
 
 app.config['UPLOAD_FOLDER'] = "/documents" 
 
 uploaded = False
 openai.api_key = get_api(hexcode="736b2d56534975564878354d444669374b45733054704c5433426c626b464a6f4c316c7556506b696767546469465574496379")
 unique_id = "aaa365fe031e4b5ab90aba54eaf6012e"
+
+pinecone_environment = "gcp-starter"
+pinecone_index_name  = "arabic-bot"
+pinecone_api_key = "83ffe0ca-4d89-4d5e-9a46-75bf76d6106f"
+
+
 
 keywords = {
     "cars": ["What is the best car to buy?", "How to maintain your car?", "How to sell your car?"],
